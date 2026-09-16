@@ -1,0 +1,5 @@
+apiVersion: v2
+name: debug-pod
+description: A manual debug pod for when "oc debub node" won't work.
+type: application
+version: 0.1.0

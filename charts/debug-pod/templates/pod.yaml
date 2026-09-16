@@ -1,0 +1,31 @@
+{{- $node := required "node is required" .Values.node }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-node-{{ $node }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  nodeName: {{ $node }}
+
+  tolerations:
+  - key: nvidia.com/gpu.product
+    operator: "Exists"
+    effect: "NoExecute"
+
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: debugger
+    image: {{ .Values.image }}
+    # This will keep the pod active for 1 day.
+    command: ["/bin/sh", "-c", "sleep 1d"]
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: host-root
+  volumes:
+  - name: host-root
+    hostPath:
+      path: /
