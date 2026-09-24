@@ -1,0 +1,18 @@
+[project]
+name = "oac-apps-kubernetes-tests"
+version = "0.1.0"
+description = "Pytest checks for a live Kubernetes cluster"
+requires-python = ">=3.10"
+dependencies = [
+    "kubernetes>=29.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["test_*.py"]
+addopts = "-ra"
