@@ -1,0 +1,25 @@
+FROM docker.io/golang:1-alpine3.24 AS builder
+
+ARG JUNIT2HTML_VERSION=v1.0.0
+ARG CHAINSAW_VERSION=v0.2.15
+ARG KUBECTL_VERSION=v1.37.0
+ARG HELM_VERSION=v4.3.0
+ARG KUSTOMIZE_VERSION=v5.8.1
+
+RUN apk add \
+  make \
+  curl \
+  tar
+
+RUN go install github.com/kitproj/junit2html@${JUNIT2HTML_VERSION}
+RUN go install github.com/kyverno/chainsaw@${CHAINSAW_VERSION}
+RUN curl -L -o /usr/local/bin/kubectl https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && chmod 755 /usr/local/bin/kubectl
+RUN curl -L -o /tmp/helm.tar.gz https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz && \
+  tar -C /usr/local/bin -xvf /tmp/helm.tar.gz --strip-components=1 --wildcards '*/helm'
+RUN curl -L -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && \
+  tar -C /usr/local/bin -xvf /tmp/kustomize.tar.gz
+
+FROM alpine:3
+
+COPY --from=builder /go/bin/ /usr/local/bin/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
