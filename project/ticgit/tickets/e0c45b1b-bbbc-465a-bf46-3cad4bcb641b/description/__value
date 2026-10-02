@@ -1,0 +1,25 @@
+The revision is hardcoded in three independent layers, and all three need
+to move from a literal main to a value, because each one is a separate
+ArgoCD source/generator pointed at this repo:
+
+1. bootstrap/templates/bootstrap.yaml — the bootstrap Application's own
+   source.targetRevision (which commit of the applicationsets chart gets
+   deployed), plus it needs to forward that revision as a second Helm
+   parameter into the applicationsets chart, the same way hubName is
+   forwarded today. bootstrap/values.yaml would get a new targetRevision
+   (default main), set per-hub at deploy time: helm template bootstrap
+   ./bootstrap --set hubName=oac-dev-infra --set targetRevision=dev.
+2. applicationsets chart — every template under templates/hub/ and
+   templates/managed/ hardcodes repoURL/targetRevision: main for the
+   Applications/ApplicationSets it generates (hub-components.yaml,
+   component-sets.yaml, cluster-apps.yaml, pure-cosi.yaml ×2,
+   hosted-ingress.yaml, hosted-clusters.yaml — note this one has two
+   revision fields: the git generator's revision and the template's
+   targetRevision). All of these need to read from a new
+   .Values.targetRevision (populated by the parameter from step 1) instead
+   of the literal main.
+3. apps/oac-dev-infra/_.yaml and apps/oac-prod-infra/_.yaml — these are
+   raw, unrendered Application manifests (no Helm chart in apps/), so
+   there's no templating to add. Since they're already split per-hub, this
+   is just a direct edit of targetRevision: main → the desired branch/tag
+   in each file.

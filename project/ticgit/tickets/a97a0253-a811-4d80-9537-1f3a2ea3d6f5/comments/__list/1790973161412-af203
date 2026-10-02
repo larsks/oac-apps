@@ -1,0 +1,1 @@
+{"author":"lars@redhat.com","body":"Currently, configuration for a cluster is split between\n`hosted-clusters/HUB/CLUSTER/values.yaml` and\n`values/HUB/CLUSTER/COMPONENT.yaml`. We should drop the hosted-clusters\nhierarchy and just place everything under `values/`. What is now under\n`hosted-clusters/` would become `values/HUB/CLUSTER/hosted-cluster.yaml`."}
