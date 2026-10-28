@@ -2,6 +2,7 @@ name: helm
 
 on:
   pull_request:
+  push:
 
 jobs:
   lint-and-test:
@@ -9,6 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: azure/setup-helm@v5
+      - uses: azure/setup-python@v7
+        with:
+          python-version: "3.14"
+      - uses: astral-sh/setup-uv@v9
       - run: |
           helm plugin install --verify=false https://github.com/helm-unittest/helm-unittest
       - run: |
@@ -17,3 +22,7 @@ jobs:
           ./scripts/helm-lint-all.sh
       - run: |
           ./scripts/helm-unittest-all.sh
+      - run: |
+          uv init
+          uv add -r scripts/requirements.txt
+          uv run scripts/check_hub_policy_compliance.py
