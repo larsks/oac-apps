@@ -1,0 +1,5 @@
+sshKey:
+  aws_secret_name: cluster/dizzy/sshkey
+
+ingressController:
+  wildcardPolicy: WildcardsAllowed
