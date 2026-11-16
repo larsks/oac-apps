@@ -1,0 +1,12 @@
+# Test fixture for tests/unit/machineconfigs_test.yaml, exercising
+# cnh.fileMode's octal-string handling. Not a real compliance rule.
+config:
+  ignition:
+    version: 3.1.0
+  storage:
+    files:
+    - contents: |
+        octal string mode fixture
+      mode: "0640"
+      overwrite: true
+      path: /etc/test/octal-string-mode

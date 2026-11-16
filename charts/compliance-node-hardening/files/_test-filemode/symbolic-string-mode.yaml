@@ -1,0 +1,12 @@
+# Test fixture for tests/unit/machineconfigs_test.yaml, exercising
+# cnh.fileMode's symbolic-string handling. Not a real compliance rule.
+config:
+  ignition:
+    version: 3.1.0
+  storage:
+    files:
+    - contents: |
+        symbolic string mode fixture
+      mode: "rw-r-----"
+      overwrite: true
+      path: /etc/test/symbolic-string-mode

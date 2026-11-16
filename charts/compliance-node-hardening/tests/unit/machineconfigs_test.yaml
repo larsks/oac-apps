@@ -105,3 +105,26 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
+  # files/_test-filemode/ fixtures exercise cnh.fileMode: an octal string
+  # ("0640") and a symbolic string ("rw-r-----") both mean 0640 == 416.
+  - it: should translate octal and symbolic string file modes to decimal
+    set:
+      profiles:
+        - dir: _test-filemode
+          namePrefix: test
+          roles: [master]
+          roleInName: false
+    asserts:
+      - equal:
+          path: spec.config.storage.files[0].mode
+          value: 416
+        documentSelector:
+          path: metadata.name
+          value: test-octal-string-mode
+      - equal:
+          path: spec.config.storage.files[0].mode
+          value: 416
+        documentSelector:
+          path: metadata.name
+          value: test-symbolic-string-mode
